@@ -5,7 +5,9 @@ import os
 
 app = Flask(__name__)
 
-if 'POSTGRES_PASSWORD_FILE' in os.environ:
+if 'POSTGRES_PASSWORD' in os.environ:
+    password = os.environ['POSTGRES_PASSWORD']
+elif 'POSTGRES_PASSWORD_FILE' in os.environ:
    with open(os.environ['POSTGRES_PASSWORD_FILE'], 'r') as f:
        password = f.read().strip()
 else:
@@ -14,6 +16,15 @@ else:
 @app.route('/')
 def hello_world():
     return 'Hello, Docker!'
+
+
+@app.route('/add_widget')
+def add_widget():
+    with psycopg2.connect(host="db", user="postgres", password=password, database="example") as conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO widgets (name, description) VALUES ('test', 'test widget')")
+    conn.close()
+    return 'added widget'
 
 
 @app.route('/widgets')
