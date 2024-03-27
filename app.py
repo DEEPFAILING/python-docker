@@ -5,9 +5,7 @@ import os
 
 app = Flask(__name__)
 
-if 'POSTGRES_PASSWORD' in os.environ:
-    password = os.environ['POSTGRES_PASSWORD']
-elif 'POSTGRES_PASSWORD_FILE' in os.environ:
+if 'POSTGRES_PASSWORD_FILE' in os.environ:
    with open(os.environ['POSTGRES_PASSWORD_FILE'], 'r') as f:
        password = f.read().strip()
 else:
